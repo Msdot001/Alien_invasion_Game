@@ -1,6 +1,7 @@
 import sys
 import pygame
 from settings import Settings
+from ship import Ship
 
 
 
@@ -20,21 +21,36 @@ class AlienInvasion:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))              # setting background screen with a dimension of 1200 * 800         
         pygame.display.set_caption("Alien Invasion By Moshood")
 
+        self.ship = Ship(self)
+
+    """
+      - Refactoring simplifies the structure of the code youve already written, making it easier to build on.
+      - A helper method does work inside a class but isnt meant to be called through an instance. 
+      -  In Python, a single leading underscore indicates a helper method.
+
+      The run_game() is splitted into two helper method (_check_event() and _update_screen())
+
+    """  
 
     def run_game(self):
         """Start the main loop for the game"""
         while True:
-            # Watch for keyboard and mouse event
-            for event in pygame.event.get():        # An event is an action that the user performs while playing the game, such as pressing a key or moving the mouse.
-                if event.type == pygame.QUIT:
-                    """sys module to exit the game when the player quits."""
-                    sys.exit()
+            self._check_event()
+            self._update_screen()
 
-            # redrawn thew screen during each pass throught the loop
-            self.screen.fill(self.settings.bg_color)
+    def _check_events(self):
+        """Response to keypresses and mouse events"""
+        for event in pygame.event.get():       
+            if event.type == pygame.QUIT:
+                sys.exit()
 
-            # Make the most recently drawn screen visible
-            pygame.display.flip()
+    def _update_screen(self):
+       """Updqate images on the screen, and flip to the new screen.""" 
+       self.screen.fill(self.settings.bg_color)
+       self.ship.blitme()
+       # Make the most recently drawn screen visible
+       pygame.display.flip()
+            
 
 if __name__ == "__main__":
     #Make a game instance and run the game
