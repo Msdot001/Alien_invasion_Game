@@ -2,6 +2,7 @@ import sys
 import pygame
 from settings import Settings
 from ship import Ship
+from bullet import Bullet 
 
 """
 The object we assigned to self.screen is called a surface.
@@ -58,6 +59,8 @@ class AlienInvasion:
             self.ship.moving_left = True 
         elif event.key == pygame.K_q:                       #Another option of quitting the game 
             sys.exit()   
+        elif event.key ==pygame.K_SPACE:                    # To fire bullet
+            self._fire_bullet()
 
     def _check_keyup_events(self, event):               # This is a refactor from _check_events()
         if event.key == pygame.K_RIGHT:                 # releasing the key set the moving right False
@@ -65,12 +68,19 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
 
+    def _fire_bullet(self):
+        """Create a new bullet and add it to the bullets group"""
+        new_bullet = Bullet(self)
+        self.bullets.add(new_bullet)    # The add() method is similar to append(), but it’s a method that’s written specifically for Pygame groups.
 
 
     def _update_screen(self):
        """Update images on the screen, and flip to the new screen.""" 
        self.screen.fill(self.settings.bg_color)
        self.ship.blitme()
+
+       for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
        # Make the most recently drawn screen visible
        pygame.display.flip()
             
