@@ -32,7 +32,7 @@ class AlienInvasion:
 
     """  
 
-    def run_game(self):
+    def run_game(self):             # run_game was refractor into _check_events() and _update_screen() method                                     
         """Start the main loop for the game"""
         while True:
             self._check_events()
@@ -42,21 +42,28 @@ class AlienInvasion:
     def _check_events(self):
         """Response to keypresses and mouse events"""
         for event in pygame.event.get():       
-            if event.type == pygame.QUIT:                   # to qyit the game once quit buttom is pressed
+            if event.type == pygame.QUIT:                   # to quit the game once quit buttom is pressed
                 sys.exit()
-
             elif event.type == pygame.KEYDOWN:             # Controll the movement of the ship
-                if event.key == pygame.K_RIGHT:            # pressing the key down set the moving right TRUE
-                    # Move the ship to the right
-                    self.ship.moving_right = True
-                elif event.key == pygame.K_LEFT:
-                    self.ship.moving_left = True                    
-
+                self._check_keydown_events(event)                         
             elif event.type == pygame.KEYUP:               # Controll the movement of the ship
-                if event.key == pygame.K_RIGHT:           # releasing the key set the moving right False
-                    self.ship.moving_right = False
-                elif event.key == pygame.K_LEFT:
-                    self.ship.moving_left = False
+                self._check_keyup_events(event)
+
+    def _check_keydown_events(self, event):                 # This is a refactor from _check_events()
+        """Respond to Keypresses"""
+        if event.key == pygame.K_RIGHT:                     # pressing the key down set the moving right TRUE
+            self.ship.moving_right = True
+        elif event.key == pygame.K_LEFT:                    
+            self.ship.moving_left = True 
+        elif event.key == pygame.K_q:                       #Another option of quitting the game 
+            sys.exit()   
+
+    def _check_keyup_events(self, event):               # This is a refactor from _check_events()
+        if event.key == pygame.K_RIGHT:                 # releasing the key set the moving right False
+            self.ship.moving_right = False
+        elif event.key == pygame.K_LEFT:
+            self.ship.moving_left = False
+
 
 
     def _update_screen(self):
