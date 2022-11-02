@@ -3,6 +3,9 @@ import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet 
+from alien import Alien
+
+
 
 """
 The object we assigned to self.screen is called a surface.
@@ -30,7 +33,10 @@ class AlienInvasion:
         pygame.display.set_caption("Alien Invasion By Moshood")
         
         self.ship = Ship(self)
-        self.bullets = pygame.sprite.Group()
+        self.bullets = pygame.sprite.Group()                     # create a group to hold the bullet
+        self.aliens = pygame.sprite.Group()                     # create a group to hold the fleet of aliens
+
+        self._create_fleet()
 
 
     def run_game(self):             # run_game was refractor into _check_events() and _update_screen() method                                     
@@ -38,13 +44,7 @@ class AlienInvasion:
         while True:
             self._check_events()
             self.ship.update()
-            self.bullets.update()
-
-            # Get rid of bullets that have dissappeared
-            for bullet in self.bullets.copy():
-                if bullet.rect.bottom <= 0:
-                    self.bullets.remove(bullet)
-
+            self._update_bullets()
             self._update_screen()
 
     def _check_events(self):
@@ -76,9 +76,23 @@ class AlienInvasion:
 
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullets group"""
-        new_bullet = Bullet(self)
-        self.bullets.add(new_bullet)    # The add() method is similar to append(), but it’s a method that’s written specifically for Pygame groups.
+        if len(self.bullets) < self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)    # The add() method is similar to append(), but it’s a method that’s written specifically for Pygame groups.
 
+    def _update_bullets(self):
+        """Update the position of bullet and get rid of old bullets"""
+        self.bullets.update()
+        # Get rid of bullets that have dissappeared
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
+
+    def _create_fleet(self):
+        """Create the fleet of aliens."""
+        #Make an alien
+        alien = Alien(self)
+        self.aliens.add(alien)
 
     def _update_screen(self):
        """Update images on the screen, and flip to the new screen.""" 
